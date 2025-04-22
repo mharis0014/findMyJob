@@ -13,6 +13,7 @@ import JobSearchingNavigator from './JobSearchingNavigator'
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 const MainNavigator: React.FC = () => {
+  console.log('Main Navigator')
   return (
     <NavigationContainer>
       <Stack.Navigator>

@@ -6,34 +6,91 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {moderateScale, moderateVerticalScale, scale} from 'react-native-size-matters'
+import {useForm, Controller} from 'react-hook-form'
+import * as yup from 'yup'
+import {yupResolver} from '@hookform/resolvers/yup'
 
 import CustomButton from '../../components/CustomButton'
 import CustomTextInput from '../../components/CustomTextInput'
 
 import {colors} from '../../constants/colors'
 import ICONS from '../../constants/icons'
+import {STRINGS} from '../../constants/strings'
+import {companyLoginSchema} from '../../validation/schemas'
 import {JobPostingStackParamList} from '../../constants/types'
 
+type FormValues = yup.InferType<typeof companyLoginSchema>
 type NavigationProp = NativeStackNavigationProp<JobPostingStackParamList, 'CompanyLogin'>
 
-const CompanyLogin = () => {
+const CompanyLogin: React.FC = () => {
   const navigation = useNavigation<NavigationProp>()
 
-  const handleLoginPress = () => {}
-  const handleSignupPress = () => navigation.navigate('CompanySignup')
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm<FormValues>({
+    resolver: yupResolver(companyLoginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  const onSubmit = (data: FormValues) => {
+    console.log('Submitted data:', data)
+    // handle API call or navigation here
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <Image source={ICONS.logo} style={styles.logo} />
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>{STRINGS.companyLogin.title}</Text>
 
-      <CustomTextInput title={'Email'} placeholder={'xyz@gmail.com'} />
-      <CustomTextInput title={'Password'} placeholder={'********'} />
+      {/** Email */}
+      <Controller
+        control={control}
+        name="email"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title={STRINGS.companyLogin.fields.email}
+            placeholder="xyz@gmail.com"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            error={errors.email?.message}
+          />
+        )}
+      />
 
-      <Text style={styles.forgotPassword}>Forgot Password?</Text>
+      {/** Password */}
+      <Controller
+        control={control}
+        name="password"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title={STRINGS.companyLogin.fields.password}
+            placeholder="********"
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            error={errors.password?.message}
+          />
+        )}
+      />
 
-      <CustomButton type="SOLID" title={'Login'} onPress={handleLoginPress} />
-      <CustomButton type="OUTLINED" title={'Create Account'} onPress={handleSignupPress} />
+      <Text style={styles.forgotPassword}>{STRINGS.companyLogin.buttons.forgotPassowrd}</Text>
+
+      <CustomButton
+        type="SOLID"
+        title={STRINGS.companyLogin.buttons.login}
+        onPress={handleSubmit(onSubmit)}
+      />
+      <CustomButton
+        type="OUTLINED"
+        title={STRINGS.companyLogin.buttons.signup}
+        onPress={() => navigation.navigate('CompanySignup')}
+      />
     </SafeAreaView>
   )
 }

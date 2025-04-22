@@ -14,6 +14,7 @@ import ICONS from '../../constants/icons'
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>
 
 const SplashScreen: React.FC = () => {
+  console.log('Splash')
   const navigation = useNavigation<NavigationProp>()
 
   useEffect(() => {

@@ -1,29 +1,63 @@
 import React from 'react'
-import {View, Text, StyleSheet, TextInput} from 'react-native'
+import {View, Text, StyleSheet, TextInput, KeyboardTypeOptions} from 'react-native'
 
 import {moderateScale, moderateVerticalScale, verticalScale} from 'react-native-size-matters'
 
 import {colors} from '../constants/colors'
 
-const CustomTextInput = ({title, placeholder}: {title: string; placeholder: string}) => {
+type CustomTextInputProps = {
+  title: string
+  placeholder: string
+  keyboardType?: KeyboardTypeOptions
+  secureTextEntry?: boolean
+  value: string
+  onChangeText: (text: string) => void
+  error?: string
+}
+
+const CustomTextInput: React.FC<CustomTextInputProps> = ({
+  title,
+  placeholder,
+  keyboardType = 'default',
+  secureTextEntry = false,
+  value,
+  onChangeText,
+  error,
+}) => {
   return (
-    <View style={styles.input}>
-      <Text style={styles.title}>{title}</Text>
-      <TextInput placeholderTextColor={colors.gray} placeholder={placeholder} />
+    <View style={styles.wrapper}>
+      <View style={[styles.inputContainer, error && styles.inputError]}>
+        <Text style={styles.title}>{title}</Text>
+        <TextInput
+          placeholderTextColor={colors.gray}
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
+          value={value}
+          onChangeText={onChangeText}
+          style={styles.textInput}
+        />
+      </View>
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  input: {
+  wrapper: {
     width: '90%',
+    alignSelf: 'center',
+    marginTop: moderateVerticalScale(20),
+  },
+  inputContainer: {
     height: verticalScale(45),
     borderWidth: 0.4,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    marginTop: moderateVerticalScale(20),
-    paddingHorizontal: moderateScale(15),
     borderRadius: moderateScale(10),
+    paddingHorizontal: moderateScale(15),
+    justifyContent: 'center',
+  },
+  inputError: {
+    borderColor: colors.red,
   },
   title: {
     position: 'absolute',
@@ -35,6 +69,16 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     fontSize: moderateScale(13),
     fontWeight: '900',
+  },
+  textInput: {
+    fontSize: moderateScale(14),
+    color: colors.textColor,
+  },
+  errorText: {
+    color: colors.red,
+    marginTop: moderateVerticalScale(4),
+    fontSize: moderateScale(12),
+    marginLeft: moderateScale(10),
   },
 })
 

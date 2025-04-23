@@ -20,8 +20,6 @@ const SelectUserTypeScreen: React.FC = () => {
   const handleHirePress = () => navigation.navigate('JobPostingNavigator')
   const handleJobSeekerPress = () => navigation.navigate('JobSearchingNavigator')
 
-  console.log('Select User Type')
-
   return (
     <View style={styles.container}>
       <Image source={ICONS.logo} style={styles.logo} accessibilityLabel="App logo" />

@@ -1,23 +1,24 @@
 import React from 'react'
-import {StyleSheet, Image, Text} from 'react-native'
+import {Image, Text} from 'react-native'
 
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {moderateScale, moderateVerticalScale, scale} from 'react-native-size-matters'
 import {useForm, Controller} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 
 import CustomButton from '../../components/CustomButton'
 import CustomTextInput from '../../components/CustomTextInput'
+import CustomLoader from '../../components/CustomLoader'
 
-import {colors} from '../../constants/colors'
 import ICONS from '../../constants/icons'
 import {STRINGS} from '../../constants/strings'
 import {companyLoginSchema} from '../../validation/schemas'
 import {JobPostingStackParamList} from '../../constants/types'
+import styles from '../../styles/companyLogin.styles'
+import {useCompanyLogin} from '../../hooks/useCompanyLogin'
 
 type FormValues = yup.InferType<typeof companyLoginSchema>
 type NavigationProp = NativeStackNavigationProp<JobPostingStackParamList, 'CompanyLogin'>
@@ -28,6 +29,7 @@ const CompanyLogin: React.FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: {errors},
   } = useForm<FormValues>({
     resolver: yupResolver(companyLoginSchema),
@@ -37,9 +39,11 @@ const CompanyLogin: React.FC = () => {
     },
   })
 
-  const onSubmit = (data: FormValues) => {
-    console.log('Submitted data:', data)
-    // handle API call or navigation here
+  const {loading, loginUser} = useCompanyLogin()
+
+  const onSubmit = async (formData: FormValues) => {
+    await loginUser(formData, navigation)
+    reset()
   }
 
   return (
@@ -91,34 +95,10 @@ const CompanyLogin: React.FC = () => {
         title={STRINGS.companyLogin.buttons.signup}
         onPress={() => navigation.navigate('CompanySignup')}
       />
+
+      <CustomLoader visible={loading} />
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  logo: {
-    width: scale(80),
-    height: scale(70),
-    marginTop: moderateVerticalScale(40),
-    alignSelf: 'center',
-  },
-  title: {
-    fontSize: moderateScale(24),
-    alignSelf: 'center',
-    fontWeight: '900',
-    marginTop: moderateVerticalScale(50),
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginRight: moderateScale(20),
-    marginTop: moderateVerticalScale(10),
-    fontWeight: '700',
-    fontSize: moderateScale(14),
-  },
-})
 
 export default CompanyLogin

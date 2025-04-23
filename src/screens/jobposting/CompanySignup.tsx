@@ -1,11 +1,10 @@
 import React from 'react'
-import {StyleSheet, Image, Text, ScrollView} from 'react-native'
+import {Image, Text, ScrollView} from 'react-native'
 
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {moderateScale, moderateVerticalScale, scale} from 'react-native-size-matters'
 import {useForm, Controller} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
@@ -13,11 +12,13 @@ import {yupResolver} from '@hookform/resolvers/yup'
 import CustomButton from '../../components/CustomButton'
 import CustomTextInput from '../../components/CustomTextInput'
 
-import {colors} from '../../constants/colors'
 import ICONS from '../../constants/icons'
 import {STRINGS} from '../../constants/strings'
 import {companySignupSchema} from '../../validation/schemas'
 import {JobPostingStackParamList} from '../../constants/types'
+import CustomLoader from '../../components/CustomLoader'
+import styles from '../../styles/companySignup.styles'
+import {useCompanySignup} from '../../hooks/useCompanySignup'
 
 type FormValues = yup.InferType<typeof companySignupSchema>
 type NavigationProp = NativeStackNavigationProp<JobPostingStackParamList, 'CompanyLogin'>
@@ -28,6 +29,7 @@ const CompanySignup: React.FC = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: {errors},
   } = useForm<FormValues>({
     resolver: yupResolver(companySignupSchema),
@@ -41,9 +43,11 @@ const CompanySignup: React.FC = () => {
     },
   })
 
+  const {loading, registerCompany} = useCompanySignup()
+
   const onSubmit = (data: FormValues) => {
-    console.log('Submitted data:', data)
-    // handle API call or navigation here
+    registerCompany(data, navigation)
+    reset()
   }
 
   return (
@@ -163,34 +167,10 @@ const CompanySignup: React.FC = () => {
           onPress={() => navigation.goBack()}
         />
       </ScrollView>
+
+      <CustomLoader visible={loading} />
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollContainer: {
-    paddingBottom: moderateVerticalScale(30),
-  },
-  logo: {
-    width: scale(80),
-    height: scale(70),
-    marginTop: moderateVerticalScale(40),
-    alignSelf: 'center',
-  },
-  title: {
-    fontSize: moderateScale(24),
-    alignSelf: 'center',
-    fontWeight: '900',
-    marginTop: moderateVerticalScale(50),
-  },
-  errorMessage: {
-    marginLeft: moderateScale(20),
-    color: colors.red,
-  },
-})
 
 export default CompanySignup

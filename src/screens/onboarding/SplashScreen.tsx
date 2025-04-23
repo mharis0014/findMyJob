@@ -10,18 +10,32 @@ import {RootStackParamList} from '../../constants/types'
 
 import {colors} from '../../constants/colors'
 import ICONS from '../../constants/icons'
+import LocalStorage from '../../utils/localStorage'
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Splash'>
 
 const SplashScreen: React.FC = () => {
-  console.log('Splash')
   const navigation = useNavigation<NavigationProp>()
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('SelectUserType')
+      getData()
     }, 3000)
   }, [])
+
+  const getData = async () => {
+    const type = await LocalStorage.getItem('userType')
+
+    if (type !== null) {
+      if (type === 'company') {
+        navigation.navigate('JobPostingNavigator', {
+          screen: 'CompanyDashboard',
+        })
+      } else {
+        navigation.navigate('SelectUserType')
+      }
+    }
+  }
 
   return (
     <View style={styles.container}>

@@ -14,7 +14,7 @@ type CustomLoaderProps = {
 
 const CustomLoader: React.FC<CustomLoaderProps> = ({
   visible,
-  color = colors.textColor,
+  color = colors.black,
   size = 'large',
   backgroundColor = colors.background,
   ...modalProps

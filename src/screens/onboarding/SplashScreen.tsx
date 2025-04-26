@@ -18,19 +18,19 @@ const SplashScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>()
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       getData()
     }, 3000)
+
+    return () => clearTimeout(timeout)
   }, [])
 
   const getData = async () => {
-    const type = await LocalStorage.getItem('userType')
+    const userType = await LocalStorage.getItem('userType')
 
-    if (type !== null) {
-      if (type === 'company') {
-        navigation.navigate('JobPostingNavigator', {
-          screen: 'CompanyDashboard',
-        })
+    if (userType !== null) {
+      if (userType === 'company') {
+        navigation.navigate('JobPostingNavigator')
       } else {
         navigation.navigate('SelectUserType')
       }
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(30),
     fontWeight: '900',
     marginTop: moderateVerticalScale(18),
-    color: colors.textColor,
+    color: colors.black,
   },
   slogan: {
     fontSize: moderateScale(16),
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: moderateVerticalScale(50),
     fontWeight: '800',
-    color: colors.textColor,
+    color: colors.black,
   },
 })
 

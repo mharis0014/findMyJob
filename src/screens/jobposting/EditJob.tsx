@@ -1,43 +1,56 @@
 import React, {useMemo, useState} from 'react'
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 
-import {useNavigation} from '@react-navigation/native'
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
 
-import CustomTextInput from '../../../components/CustomTextInput'
-import CustomDropDown from '../../../components/CustomDropDown'
-import CustomButton from '../../../components/CustomButton'
-import CustomModalSelector from '../../../components/CustomModalSelector'
-import CustomLoader from '../../../components/CustomLoader'
+import CustomTextInput from '../../components/CustomTextInput'
+import CustomDropDown from '../../components/CustomDropDown'
+import CustomButton from '../../components/CustomButton'
+import CustomModalSelector from '../../components/CustomModalSelector'
+import CustomLoader from '../../components/CustomLoader'
 
-import ICONS from '../../../constants/icons'
-import {profiles} from '../../../data/profilesData'
-import {CompanyBottomTabsParamList, JobForm} from '../../../constants/types'
-import styles from '../../../styles/addJob.styles'
-import {usePostJob} from '../../../hooks/usePostJob'
+import ICONS from '../../constants/icons'
+import {CompanyAppStackParamList, CompanyBottomTabsParamList, JobForm} from '../../constants/types'
+import {profiles} from '../../data/profilesData'
+import {useEditJob} from '../../hooks/useEditJob'
+import styles from '../../styles/addJob.styles'
 
 type NavigationProp = BottomTabNavigationProp<CompanyBottomTabsParamList, 'AddJob'>
 
-const AddJob: React.FC = () => {
+const EditJob: React.FC = () => {
+  const route = useRoute<RouteProp<CompanyAppStackParamList, 'EditJob'>>()
   const navigation = useNavigation<NavigationProp>()
-  const {loading, postJob} = usePostJob()
+
+  const {data} = route.params
+  const {loading, editJob} = useEditJob()
 
   const [form, setForm] = useState<JobForm>({
-    jobTitle: '',
-    jobDesc: '',
-    selectedCategory: '',
-    selectedSkill: '',
-    experience: '',
-    salaryPackage: '',
-    company: '',
+    jobTitle: data.jobTitle,
+    jobDesc: data.jobDesc,
+    selectedCategory: data.category,
+    selectedSkill: data.skill,
+    experience: data.experience,
+    salaryPackage: data.salaryPackage,
+    company: data.company,
   })
 
   const [categoryModalVisible, setCategoryModalVisible] = useState(false)
   const [skillModalVisible, setSkillModalVisible] = useState(false)
 
-  const handleChange = <K extends keyof JobForm>(key: K, value: JobForm[K]) =>
+  const handleChange = <K extends keyof JobForm>(key: K, value: JobForm[K]) => {
     setForm(prev => ({...prev, [key]: value}))
+  }
+
+  const handleCategorySelect = (category: string) => {
+    handleChange('selectedCategory', category)
+    handleChange('selectedSkill', '')
+  }
+
+  const categoryOptions = useMemo(() => profiles.map(p => p.category), [])
+
+  const handleSuccess = () => navigation.goBack()
 
   const skillOptions = useMemo(() => {
     const selectedProfile = profiles.find(p => p.category === form.selectedCategory)
@@ -51,7 +64,7 @@ const AddJob: React.FC = () => {
         <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
           <Image source={ICONS.close} style={styles.icon} />
         </TouchableOpacity>
-        <Text style={styles.title}>Post Job</Text>
+        <Text style={styles.title}>Edit Job</Text>
       </View>
 
       {/* Form Inputs */}
@@ -102,18 +115,19 @@ const AddJob: React.FC = () => {
       />
 
       {/* Submit Button */}
-      <CustomButton type="SOLID" title="Post Job" onPress={() => postJob(form)} />
+      <CustomButton
+        type="SOLID"
+        title="Edit Job"
+        onPress={() => editJob(form, data.id, handleSuccess)}
+      />
       <CustomLoader visible={loading} />
 
       {/* Categories DropDown Modal */}
       <CustomModalSelector
         visible={categoryModalVisible}
         title="Select Category"
-        data={profiles.map(p => p.category)}
-        onSelect={category => {
-          handleChange('selectedCategory', category)
-          handleChange('selectedSkill', '')
-        }}
+        data={categoryOptions}
+        onSelect={handleCategorySelect}
         onClose={() => setCategoryModalVisible(false)}
       />
 
@@ -129,4 +143,4 @@ const AddJob: React.FC = () => {
   )
 }
 
-export default AddJob
+export default EditJob

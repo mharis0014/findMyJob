@@ -37,12 +37,7 @@ export const useCompanyLogin = () => {
           LocalStorage.setItem('email', userData.email)
           LocalStorage.setItem('userType', 'company')
 
-          // Navigate to CompanyDashboard
-          navigation.navigate('CompanyDashboard', {
-            id: snapshot.docs[0].id,
-            name: userData.name,
-            email: userData.email,
-          })
+          navigation.navigate('CompanyAppNavigator')
         } else {
           showToast({
             type: 'error',

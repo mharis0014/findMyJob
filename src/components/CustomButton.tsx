@@ -41,11 +41,11 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(14),
   },
   solidButton: {
-    backgroundColor: colors.textColor,
+    backgroundColor: colors.black,
   },
   outlinedButton: {
     borderWidth: 1,
-    borderColor: colors.textColor,
+    borderColor: colors.black,
   },
   solidText: {
     color: colors.background,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(14),
   },
   outlinedText: {
-    color: colors.textColor,
+    color: colors.black,
     fontWeight: '700',
     fontSize: moderateScale(14),
   },

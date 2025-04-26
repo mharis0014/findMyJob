@@ -11,6 +11,9 @@ const ICONS = {
   chat_dark: require('../assets/icons/chat-dark.png'),
   user_light: require('../assets/icons/user-light.png'),
   user_dark: require('../assets/icons/user-dark.png'),
+  close: require('../assets/icons/close.png'),
+  arrow_down: require('../assets/icons/arrow-down.png'),
+  arrow_up: require('../assets/icons/arrow-up.png'),
 }
 
 export default ICONS

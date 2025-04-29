@@ -15,6 +15,7 @@ import {
 import {CompanyAppStackParamList, JobType} from '../../../constants/types'
 import LocalStorage from '../../../utils/localStorage'
 import {getTimeAgo} from '../../../utils/dateTimeHelper'
+import {STRINGS} from '../../../constants/strings'
 import styles from '../../../styles/myJobs.styles'
 
 type NavigationProp = NativeStackNavigationProp<CompanyAppStackParamList>
@@ -107,7 +108,7 @@ const MyJobs = () => {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.headerTitle}>FindMyJob</Text>
+      <Text style={styles.headerTitle}>{STRINGS.appTitle}</Text>
 
       {loading ? (
         <JobCardShimmerList />

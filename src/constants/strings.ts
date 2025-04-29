@@ -1,4 +1,5 @@
 export const STRINGS = {
+  appTitle: 'FindMyJob',
   companySignup: {
     title: 'Create Account',
     fields: {

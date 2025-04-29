@@ -4,8 +4,7 @@ import {View, Text, TouchableOpacity, Image, ScrollView} from 'react-native'
 import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
-import ActionButton from '../../../components/common/ActionButton'
-import ImagePickerModal from '../../../components/common/ImagePickerModal'
+import {ActionButton, CustomAlert, ImagePickerModal} from '../../../components/common'
 import ProfileItem from '../../../components/profile/ProfileItem'
 
 import {colors} from '../../../constants/colors'
@@ -14,12 +13,19 @@ import LocalStorage from '../../../utils/localStorage'
 import {CompanyBottomTabsParamList} from '../../../constants/types'
 import styles from '../../../styles/companyProfile.styles'
 import {uploadImageToCloudinary} from '../../../utils/uploadImageToCloudinary'
+import {useLogout} from '../../../hooks/useLogout'
+import {STRINGS} from '../../../constants/strings'
 
 type NavigationProp = NativeStackNavigationProp<CompanyBottomTabsParamList, 'CompanyProfile'>
 
 const CompanyProfile = () => {
   const navigation = useNavigation<NavigationProp>()
   const isFocused = useIsFocused()
+  const {isLogoutAlertVisible, showLogoutAlert, hideLogoutAlert, handleConfirmLogout} = useLogout()
+
+  const handleLogoutPress = () => {
+    showLogoutAlert()
+  }
   const [name, setName] = useState<string>('')
   const [jobs, setJobs] = useState<unknown[]>([])
   const [profilePic, setProfilePic] = useState<string | null>(null)
@@ -68,7 +74,7 @@ const CompanyProfile = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Header */}
-      <Text style={styles.headerTitle}>FindMyJob</Text>
+      <Text style={styles.headerTitle}>{STRINGS.appTitle}</Text>
 
       {/* Profile Picture */}
       <TouchableOpacity style={styles.profilePicContainer} activeOpacity={0.8}>
@@ -101,7 +107,7 @@ const CompanyProfile = () => {
         />
         <ProfileItem icon={ICONS.contact_us} title={'Contact Us'} onPress={() => {}} />
         <ProfileItem icon={ICONS.theme} title={'App Theme'} onPress={() => {}} />
-        <ProfileItem icon={ICONS.logout} title={'Logout'} onPress={() => {}} />
+        <ProfileItem icon={ICONS.logout} title={'Logout'} onPress={handleLogoutPress} />
       </View>
 
       {/* Image Picker Modal */}
@@ -109,6 +115,17 @@ const CompanyProfile = () => {
         visible={isModalVisible}
         onClose={handleCloseModal}
         onImageSelect={handleImageSelect}
+      />
+
+      {/* Logout Alert */}
+      <CustomAlert
+        visible={isLogoutAlertVisible}
+        title="Logout"
+        description="Are you sure you want to logout?"
+        confirmText="Logout"
+        cancelText="Cancel"
+        onConfirm={handleConfirmLogout}
+        onCancel={hideLogoutAlert}
       />
     </ScrollView>
   )

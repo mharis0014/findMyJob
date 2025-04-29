@@ -7,6 +7,7 @@ import {CompanyAppStackParamList} from '../constants/types'
 import CompanyBottomTabsNavigator from './CompanyBottomTabsNavigator'
 import EditJob from '../screens/jobposting/EditJob'
 import CompanyEditProfile from '../screens/jobposting/CompanyEditProfile'
+import RootNavigator from './RootNavigator'
 
 const Stack = createNativeStackNavigator<CompanyAppStackParamList>()
 
@@ -24,6 +25,7 @@ const CompanyAppNavigator: React.FC = () => {
         component={CompanyEditProfile}
         options={{headerShown: false}}
       />
+      <Stack.Screen name="RootNavigator" component={RootNavigator} options={{headerShown: false}} />
     </Stack.Navigator>
   )
 }

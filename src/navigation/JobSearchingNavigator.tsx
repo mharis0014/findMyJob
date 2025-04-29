@@ -1,11 +1,21 @@
-import {View, Text} from 'react-native'
 import React from 'react'
 
-const JobSearchingNavigator = () => {
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
+
+import {JobSearchingStackParamList} from '../constants/types'
+import DrawerNavigator from './DrawerNavigator'
+
+const Stack = createNativeStackNavigator<JobSearchingStackParamList>()
+
+const JobSearchingNavigator: React.FC = () => {
   return (
-    <View>
-      <Text>JobSearchingNavigator</Text>
-    </View>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="DrawerNavigator"
+        component={DrawerNavigator}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
   )
 }
 

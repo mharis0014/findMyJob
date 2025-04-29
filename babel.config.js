@@ -10,5 +10,6 @@ module.exports = {
         whitelist: null,
       },
     ],
+    'react-native-reanimated/plugin',
   ],
 }

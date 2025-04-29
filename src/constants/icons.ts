@@ -23,6 +23,8 @@ const ICONS = {
   review: require('../assets/icons/review.png'),
   chevron_right: require('../assets/icons/chevron-right.png'),
   left_arrow: require('../assets/icons/left-arrow.png'),
+  send_light: require('../assets/icons/send-light.png'),
+  send_dark: require('../assets/icons/send-dark.png'),
 }
 
 export default ICONS

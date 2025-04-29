@@ -3,18 +3,14 @@ import {Image, View} from 'react-native'
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 
+import {AddJob, Chats, CompanyProfile, MyJobs, SearchCandidates} from '../screens/jobposting/tabs'
+
 import ICONS from '../constants/icons'
 import {colors} from '../constants/colors'
-
-import MyJobs from '../screens/jobposting/tabs/MyJobs'
-import SearchCandidates from '../screens/jobposting/tabs/SearchCandidates'
-import AddJob from '../screens/jobposting/tabs/AddJob'
-import Chats from '../screens/jobposting/tabs/Chats'
-import CompanyProfile from '../screens/jobposting/tabs/CompanyProfile'
-
+import {CompanyBottomTabsParamList} from '../constants/types'
 import styles from '../styles/companyBottomTabsNavigator.styles'
 
-const Tab = createBottomTabNavigator()
+const Tab = createBottomTabNavigator<CompanyBottomTabsParamList>()
 
 const ICON_MAP = {
   MyJobs: ICONS.home_dark,
@@ -41,7 +37,7 @@ const getTabBarIcon = (routeName: string, focused: boolean) => {
   )
 }
 
-const CompanyBottomTabsNavigator = () => {
+const CompanyBottomTabsNavigator: React.FC = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({

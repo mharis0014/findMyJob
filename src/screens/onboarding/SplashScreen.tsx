@@ -9,6 +9,7 @@ import {moderateScale, moderateVerticalScale, scale, verticalScale} from 'react-
 import {RootStackParamList} from '../../constants/types'
 
 import {colors} from '../../constants/colors'
+import {STRINGS} from '../../constants/strings'
 import ICONS from '../../constants/icons'
 import LocalStorage from '../../utils/localStorage'
 
@@ -28,19 +29,17 @@ const SplashScreen: React.FC = () => {
   const getData = async () => {
     const userType = await LocalStorage.getItem('userType')
 
-    if (userType !== null) {
-      if (userType === 'company') {
-        navigation.navigate('JobPostingNavigator')
-      } else {
-        navigation.navigate('SelectUserType')
-      }
+    if (userType === 'company') {
+      navigation.navigate('JobPostingNavigator')
+    } else {
+      navigation.navigate('SelectUserType')
     }
   }
 
   return (
     <View style={styles.container}>
       <Image source={ICONS.logo as ImageSourcePropType} resizeMode="contain" style={styles.logo} />
-      <Text style={styles.name}>FindMyJob</Text>
+      <Text style={styles.name}>{STRINGS.appTitle}</Text>
       <Text style={styles.slogan}>Post & Find Jobs in One Place</Text>
     </View>
   )

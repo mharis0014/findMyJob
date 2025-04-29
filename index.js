@@ -1,6 +1,4 @@
-/**
- * @format
- */
+import './gesture-handler.native'
 
 import {AppRegistry} from 'react-native'
 import App from './App'

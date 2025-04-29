@@ -1,7 +1,7 @@
 import React from 'react'
 import {Text, TouchableOpacity} from 'react-native'
 
-import styles from '../styles/myJobs.styles'
+import styles from '../../styles/myJobs.styles'
 
 type Props = {
   title: string

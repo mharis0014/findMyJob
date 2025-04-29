@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, Text} from 'react-native'
 
-import styles from '../styles/myJobs.styles'
+import styles from '../../styles/myJobs.styles'
 
 type Props = {label: string; value: string}
 

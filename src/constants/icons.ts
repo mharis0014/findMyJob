@@ -14,6 +14,15 @@ const ICONS = {
   close: require('../assets/icons/close.png'),
   arrow_down: require('../assets/icons/arrow-down.png'),
   arrow_up: require('../assets/icons/arrow-up.png'),
+  user: require('../assets/icons/user.png'),
+  logout: require('../assets/icons/power-off.png'),
+  contact_us: require('../assets/icons/contact-mail.png'),
+  theme: require('../assets/icons/theme.png'),
+  jobs: require('../assets/icons/briefcase.png'),
+  camera: require('../assets/icons/camera.png'),
+  review: require('../assets/icons/review.png'),
+  chevron_right: require('../assets/icons/chevron-right.png'),
+  left_arrow: require('../assets/icons/left-arrow.png'),
 }
 
 export default ICONS

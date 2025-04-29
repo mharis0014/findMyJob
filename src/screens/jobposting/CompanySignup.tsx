@@ -9,14 +9,12 @@ import {useForm, Controller} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 
-import CustomButton from '../../components/CustomButton'
-import CustomTextInput from '../../components/CustomTextInput'
+import {CustomButton, CustomLoader, CustomTextInput} from '../../components/common'
 
 import ICONS from '../../constants/icons'
 import {STRINGS} from '../../constants/strings'
 import {companySignupSchema} from '../../validation/schemas'
 import {JobPostingStackParamList} from '../../constants/types'
-import CustomLoader from '../../components/CustomLoader'
 import styles from '../../styles/companySignup.styles'
 import {useCompanySignup} from '../../hooks/useCompanySignup'
 

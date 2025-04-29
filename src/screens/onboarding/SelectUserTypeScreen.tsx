@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {moderateScale, moderateVerticalScale, scale} from 'react-native-size-matters'
 
-import CustomButton from '../../components/CustomButton'
+import {CustomButton} from '../../components/common'
 
 import ICONS from '../../constants/icons'
 import {colors} from '../../constants/colors'

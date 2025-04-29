@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     paddingTop: moderateScale(20),
   },
+  fill: {
+    flex: 1,
+  },
   headerTitle: {
     fontSize: moderateScale(24),
     fontWeight: '900',
@@ -133,6 +136,34 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 14,
     color: colors.textPrimary, // or any color you set
+  },
+  loader: {
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: moderateScale(20),
+  },
+  loaderTitle: {
+    width: '70%',
+    height: verticalScale(20),
+    borderRadius: moderateScale(10),
+    marginTop: moderateScale(10),
+  },
+  loaderButtonView: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: moderateScale(12),
+  },
+  loaderButton: {
+    width: '47%',
+    height: verticalScale(30),
+    borderRadius: moderateScale(10),
+  },
+  lastUpdatedText: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: colors.gray,
+    marginVertical: 8,
   },
 })
 

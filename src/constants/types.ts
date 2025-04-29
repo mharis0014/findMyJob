@@ -16,6 +16,7 @@ export type JobPostingStackParamList = {
 export type CompanyAppStackParamList = {
   CompanyBottomTabsNavigator: undefined
   EditJob: undefined
+  CompanyEditProfile: undefined
 }
 
 export type CompanyBottomTabsParamList = {
@@ -34,6 +35,24 @@ export type JobForm = {
   experience: string
   salaryPackage: string
   company: string
+}
+
+export type CompnayUserType = {
+  id: string
+  name: string
+  email: string
+  contact: string
+  companyName: string
+  address: string
+  password: string
+}
+
+export type CompanyProfileUpdateType = {
+  name: string
+  email: string
+  contact: string
+  companyName: string
+  address: string
 }
 
 export type JobType = {

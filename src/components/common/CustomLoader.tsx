@@ -3,7 +3,7 @@ import {View, Modal, ActivityIndicator, StyleSheet, ModalProps} from 'react-nati
 
 import {moderateScale, scale} from 'react-native-size-matters'
 
-import {colors} from '../constants/colors'
+import {colors} from '../../constants/colors'
 
 type CustomLoaderProps = {
   visible: boolean

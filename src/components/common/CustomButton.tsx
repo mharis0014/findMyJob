@@ -3,7 +3,7 @@ import {Text, StyleSheet, TouchableOpacity} from 'react-native'
 
 import {moderateScale, moderateVerticalScale, verticalScale} from 'react-native-size-matters'
 
-import {colors} from '../constants/colors'
+import {colors} from '../../constants/colors'
 
 type ButtonProps = {
   type: 'SOLID' | 'OUTLINED'

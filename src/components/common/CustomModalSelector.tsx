@@ -1,7 +1,7 @@
 import React from 'react'
 import {Modal, View, FlatList, Text, TouchableOpacity} from 'react-native'
 
-import styles from '../styles/addJob.styles'
+import styles from '../../styles/addJob.styles'
 
 type Props = {
   visible: boolean

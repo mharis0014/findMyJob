@@ -1,32 +1,45 @@
 import React from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, TextInput, KeyboardTypeOptions} from 'react-native'
 
-import {moderateScale, moderateVerticalScale, scale, verticalScale} from 'react-native-size-matters'
+import {moderateScale, moderateVerticalScale, verticalScale} from 'react-native-size-matters'
 
-import {colors} from '../constants/colors'
-import ICONS from '../constants/icons'
+import {colors} from '../../constants/colors'
 
-type Props = {
+type CustomTextInputProps = {
   title: string
   placeholder: string
-  onPress: () => void
+  keyboardType?: KeyboardTypeOptions
+  secureTextEntry?: boolean
+  value: string
+  onChangeText: (text: string) => void
   error?: string
 }
 
-const CustomDropDown: React.FC<Props> = ({title, placeholder, onPress, error}) => {
-  const isUnselected = placeholder.includes('Select')
-
+const CustomTextInput: React.FC<CustomTextInputProps> = ({
+  title,
+  placeholder,
+  keyboardType = 'default',
+  secureTextEntry = false,
+  value,
+  onChangeText,
+  error,
+}) => {
   return (
-    <TouchableOpacity style={styles.wrapper} onPress={onPress} activeOpacity={0.7}>
+    <View style={styles.wrapper}>
       <View style={[styles.inputContainer, error && styles.inputError]}>
         <Text style={[styles.title, error && styles.errorTextColor]}>{title}</Text>
-        <Text style={[styles.placeholder, !isUnselected && styles.placeholderSelected]}>
-          {placeholder}
-        </Text>
-        <Image source={ICONS.arrow_down} style={styles.icon} />
+        <TextInput
+          placeholderTextColor={colors.gray}
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
+          value={value}
+          onChangeText={onChangeText}
+          style={styles.textInput}
+        />
       </View>
-      {!!error && <Text style={styles.errorText}>{error}</Text>}
-    </TouchableOpacity>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+    </View>
   )
 }
 
@@ -37,13 +50,11 @@ const styles = StyleSheet.create({
     marginTop: moderateVerticalScale(20),
   },
   inputContainer: {
-    flexDirection: 'row',
     height: verticalScale(45),
     borderWidth: 0.4,
     borderRadius: moderateScale(10),
     paddingHorizontal: moderateScale(15),
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
   },
   inputError: {
     borderColor: colors.red,
@@ -58,15 +69,9 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(13),
     fontWeight: '900',
   },
-  placeholder: {
-    color: colors.darkGray,
-  },
-  placeholderSelected: {
+  textInput: {
+    fontSize: moderateScale(14),
     color: colors.black,
-  },
-  icon: {
-    width: scale(10),
-    height: scale(10),
   },
   errorText: {
     color: colors.red,
@@ -75,8 +80,8 @@ const styles = StyleSheet.create({
     marginLeft: moderateScale(10),
   },
   errorTextColor: {
-    color: colors.red,
+    color: colors.black,
   },
 })
 
-export default CustomDropDown
+export default CustomTextInput

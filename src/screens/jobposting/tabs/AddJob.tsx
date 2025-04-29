@@ -2,47 +2,69 @@ import React, {useMemo, useState} from 'react'
 import {View, Text, TouchableOpacity, Image} from 'react-native'
 
 import {useNavigation} from '@react-navigation/native'
-import {SafeAreaView} from 'react-native-safe-area-context'
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs'
+import {SafeAreaView} from 'react-native-safe-area-context'
 
-import CustomTextInput from '../../../components/CustomTextInput'
-import CustomDropDown from '../../../components/CustomDropDown'
-import CustomButton from '../../../components/CustomButton'
-import CustomModalSelector from '../../../components/CustomModalSelector'
-import CustomLoader from '../../../components/CustomLoader'
+import {useForm, Controller} from 'react-hook-form'
+import * as yup from 'yup'
+import {yupResolver} from '@hookform/resolvers/yup'
+
+import {
+  CustomButton,
+  CustomDropDown,
+  CustomLoader,
+  CustomModalSelector,
+  CustomTextInput,
+} from '../../../components/common'
 
 import ICONS from '../../../constants/icons'
 import {profiles} from '../../../data/profilesData'
-import {CompanyBottomTabsParamList, JobForm} from '../../../constants/types'
+import {JobSchema} from '../../../validation/schemas'
+import {CompanyBottomTabsParamList} from '../../../constants/types'
 import styles from '../../../styles/addJob.styles'
 import {usePostJob} from '../../../hooks/usePostJob'
 
+type FormValues = yup.InferType<typeof JobSchema>
 type NavigationProp = BottomTabNavigationProp<CompanyBottomTabsParamList, 'AddJob'>
 
 const AddJob: React.FC = () => {
   const navigation = useNavigation<NavigationProp>()
   const {loading, postJob} = usePostJob()
 
-  const [form, setForm] = useState<JobForm>({
-    jobTitle: '',
-    jobDesc: '',
-    selectedCategory: '',
-    selectedSkill: '',
-    experience: '',
-    salaryPackage: '',
-    company: '',
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm<FormValues>({
+    resolver: yupResolver(JobSchema),
+    defaultValues: {
+      jobTitle: '',
+      jobDesc: '',
+      selectedCategory: '',
+      selectedSkill: '',
+      experience: '',
+      salaryPackage: '',
+      company: '',
+    },
   })
 
   const [categoryModalVisible, setCategoryModalVisible] = useState(false)
   const [skillModalVisible, setSkillModalVisible] = useState(false)
 
-  const handleChange = <K extends keyof JobForm>(key: K, value: JobForm[K]) =>
-    setForm(prev => ({...prev, [key]: value}))
+  const selectedCategory = watch('selectedCategory')
 
   const skillOptions = useMemo(() => {
-    const selectedProfile = profiles.find(p => p.category === form.selectedCategory)
+    const selectedProfile = profiles.find(p => p.category === selectedCategory)
     return selectedProfile?.keywords.map(skill => skill.join(' ')) || []
-  }, [form.selectedCategory])
+  }, [selectedCategory])
+
+  const onSubmit = async (formData: FormValues) => {
+    await postJob(formData)
+    reset()
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,54 +77,107 @@ const AddJob: React.FC = () => {
       </View>
 
       {/* Form Inputs */}
-      <CustomTextInput
-        title={'Job Title'}
-        placeholder="ex. Website Designer"
-        value={form.jobTitle}
-        onChangeText={text => handleChange('jobTitle', text)}
+      <Controller
+        control={control}
+        name="jobTitle"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title="Job Title"
+            placeholder="ex. Website Designer"
+            value={value}
+            onChangeText={onChange}
+            error={errors.jobTitle?.message}
+          />
+        )}
       />
-      <CustomTextInput
-        title="Job Description"
-        placeholder="ex. We are looking for a skilled Website Designer for our Company"
-        value={form.jobDesc}
-        onChangeText={text => handleChange('jobDesc', text)}
+
+      <Controller
+        control={control}
+        name="jobDesc"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title="Job Description"
+            placeholder="ex. We are looking for a skilled Website Designer for our Company"
+            value={value}
+            onChangeText={onChange}
+            error={errors.jobDesc?.message}
+          />
+        )}
       />
 
       {/* Category Dropdown */}
-      <CustomDropDown
-        title="Category"
-        placeholder={form.selectedCategory || 'Select Category'}
-        onPress={() => setCategoryModalVisible(true)}
+      <Controller
+        control={control}
+        name="selectedCategory"
+        render={({field: {value}}) => (
+          <CustomDropDown
+            title="Category"
+            placeholder={value || 'Select Category'}
+            onPress={() => setCategoryModalVisible(true)}
+            error={errors.selectedCategory?.message}
+          />
+        )}
       />
 
       {/* Skill Dropdown */}
-      <CustomDropDown
-        title="Skills"
-        placeholder={form.selectedSkill || 'Select Skill'}
-        onPress={() => setSkillModalVisible(true)}
+      <Controller
+        control={control}
+        name="selectedSkill"
+        render={({field: {value}}) => (
+          <CustomDropDown
+            title="Skills"
+            placeholder={value || 'Select Skill'}
+            onPress={() => setSkillModalVisible(true)}
+            error={errors.selectedSkill?.message}
+          />
+        )}
       />
-      <CustomTextInput
-        title="Experience"
-        placeholder="ex. candidate should have 2-3 Years of industrial experience"
-        value={form.experience}
-        onChangeText={text => handleChange('experience', text)}
+
+      <Controller
+        control={control}
+        name="experience"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title="Experience"
+            placeholder="ex. candidate should have 2-3 Years of industrial experience"
+            value={value}
+            onChangeText={onChange}
+            error={errors.experience?.message}
+          />
+        )}
       />
-      <CustomTextInput
-        title="Salary Package"
-        placeholder="ex. 2 Lac"
-        keyboardType="number-pad"
-        value={form.salaryPackage}
-        onChangeText={text => handleChange('salaryPackage', text)}
+
+      <Controller
+        control={control}
+        name="salaryPackage"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title="Salary Package"
+            placeholder="ex. 2 Lac"
+            keyboardType="number-pad"
+            value={value}
+            onChangeText={onChange}
+            error={errors.salaryPackage?.message}
+          />
+        )}
       />
-      <CustomTextInput
-        title="Company"
-        placeholder="ex. Google"
-        value={form.company}
-        onChangeText={text => handleChange('company', text)}
+
+      <Controller
+        control={control}
+        name="company"
+        render={({field: {onChange, value}}) => (
+          <CustomTextInput
+            title="Company"
+            placeholder="ex. Google"
+            value={value}
+            onChangeText={onChange}
+            error={errors.company?.message}
+          />
+        )}
       />
 
       {/* Submit Button */}
-      <CustomButton type="SOLID" title="Post Job" onPress={() => postJob(form)} />
+      <CustomButton type="SOLID" title="Post Job" onPress={handleSubmit(onSubmit)} />
       <CustomLoader visible={loading} />
 
       {/* Categories DropDown Modal */}
@@ -111,8 +186,9 @@ const AddJob: React.FC = () => {
         title="Select Category"
         data={profiles.map(p => p.category)}
         onSelect={category => {
-          handleChange('selectedCategory', category)
-          handleChange('selectedSkill', '')
+          setValue('selectedCategory', category)
+          setValue('selectedSkill', '') // Reset selected skill
+          setCategoryModalVisible(false)
         }}
         onClose={() => setCategoryModalVisible(false)}
       />
@@ -122,7 +198,10 @@ const AddJob: React.FC = () => {
         visible={skillModalVisible}
         title="Select Skill"
         data={skillOptions}
-        onSelect={skill => handleChange('selectedSkill', skill)}
+        onSelect={skill => {
+          setValue('selectedSkill', skill)
+          setSkillModalVisible(false)
+        }}
         onClose={() => setSkillModalVisible(false)}
       />
     </SafeAreaView>

@@ -1,8 +1,8 @@
 import React from 'react'
 import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native'
 
-import {colors} from '../constants/colors'
-import {CustomAlertProps} from '../constants/types'
+import {colors} from '../../constants/colors'
+import {CustomAlertProps} from '../../constants/types'
 
 const CustomAlert = ({
   visible,

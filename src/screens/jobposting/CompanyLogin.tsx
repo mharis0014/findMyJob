@@ -9,9 +9,7 @@ import {useForm, Controller} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 
-import CustomButton from '../../components/CustomButton'
-import CustomTextInput from '../../components/CustomTextInput'
-import CustomLoader from '../../components/CustomLoader'
+import {CustomButton, CustomLoader, CustomTextInput} from '../../components/common'
 
 import ICONS from '../../constants/icons'
 import {STRINGS} from '../../constants/strings'

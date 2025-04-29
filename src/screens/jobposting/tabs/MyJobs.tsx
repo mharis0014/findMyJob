@@ -5,14 +5,16 @@ import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import firestore from '@react-native-firebase/firestore'
 
-import JobInfoRow from '../../../components/JobInfoRow'
-import ActionButton from '../../../components/ActionButton'
-import CustomAlert from '../../../components/CustomAlert'
-import CustomLoader from '../../../components/CustomLoader'
+import {
+  DeleteJobAlert,
+  EmptyJobList,
+  JobCard,
+  JobCardShimmerList,
+} from '../../../components/my_jobs'
 
-import LocalStorage from '../../../utils/localStorage'
 import {CompanyAppStackParamList, JobType} from '../../../constants/types'
-import {colors} from '../../../constants/colors'
+import LocalStorage from '../../../utils/localStorage'
+import {getTimeAgo} from '../../../utils/dateTimeHelper'
 import styles from '../../../styles/myJobs.styles'
 
 type NavigationProp = NativeStackNavigationProp<CompanyAppStackParamList>
@@ -25,23 +27,33 @@ const MyJobs = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [alertVisible, setAlertVisible] = useState<boolean>(false)
   const [jobToDelete, setJobToDelete] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   const fetchJobs = useCallback(async () => {
     try {
       setLoading(true)
-      const userId = await LocalStorage.getItem('userId')
-      const snapshot = await firestore().collection('jobs').where('postedBy', '==', userId).get()
 
-      const jobsList: JobType[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...(doc.data() as Omit<JobType, 'id'>),
-      }))
+      const storedJobs = await LocalStorage.getItem('jobs')
+      if (storedJobs) {
+        setJobs(JSON.parse(storedJobs))
+      } else {
+        const userId = await LocalStorage.getItem('userId')
+        const snapshot = await firestore().collection('jobs').where('postedBy', '==', userId).get()
 
-      setJobs(jobsList)
+        const jobsList: JobType[] = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...(doc.data() as Omit<JobType, 'id'>),
+        }))
+
+        setJobs(jobsList)
+        LocalStorage.setItem('jobs', JSON.stringify(jobsList))
+      }
     } catch (error) {
       console.error('[MyJobs]', error)
     } finally {
       setLoading(false)
+      setLastUpdated(new Date())
     }
   }, [])
 
@@ -50,6 +62,12 @@ const MyJobs = () => {
       fetchJobs()
     }
   }, [isFocused, fetchJobs])
+
+  const onRefresh = async () => {
+    setRefreshing(true)
+    await fetchJobs()
+    setRefreshing(false)
+  }
 
   const handleDeleteJob = (jobId: string) => {
     setJobToDelete(jobId)
@@ -64,7 +82,7 @@ const MyJobs = () => {
     if (jobToDelete) {
       try {
         await firestore().collection('jobs').doc(jobToDelete).delete()
-        fetchJobs() // Re-fetch jobs after deletion
+        fetchJobs()
       } catch (error) {
         console.error('[MyJobs] Error deleting job:', error)
       } finally {
@@ -79,61 +97,41 @@ const MyJobs = () => {
     setJobToDelete(null)
   }
 
-  const renderEmptyList = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>No Jobs Found</Text>
-    </View>
-  )
-
-  const renderJobItem = ({item}: {item: JobType}) => (
-    <View style={styles.card}>
-      <Text style={styles.jobTitle}>{item.jobTitle}</Text>
-      <Text style={styles.jobDescription}>{item.jobDesc}</Text>
-
-      <JobInfoRow label="Salary" value={`${item.salaryPackage} L/year`} />
-      <JobInfoRow label="Category" value={item.category} />
-      <JobInfoRow label="Skill" value={item.skill} />
-
-      <View style={styles.buttonContainer}>
-        <ActionButton
-          title="Edit"
-          backgroundColor={colors.primary}
-          onPress={() => handleEditJob(item)}
-        />
-        <ActionButton
-          title="Delete"
-          backgroundColor={colors.error}
-          onPress={() => handleDeleteJob(item.id)}
-        />
-      </View>
-    </View>
+  const renderJobItem = ({item}) => (
+    <JobCard
+      job={item}
+      onEdit={() => handleEditJob(item)}
+      onDelete={() => handleDeleteJob(item.id)}
+    />
   )
 
   return (
     <View style={styles.screen}>
       <Text style={styles.headerTitle}>FindMyJob</Text>
 
-      <FlatList
-        data={jobs}
-        keyExtractor={item => item.id}
-        renderItem={renderJobItem}
-        contentContainerStyle={[styles.listContainer, jobs.length === 0 && styles.screenCenter]}
-        ListEmptyComponent={renderEmptyList}
-        showsVerticalScrollIndicator={false}
-      />
+      {loading ? (
+        <JobCardShimmerList />
+      ) : (
+        <View>
+          <FlatList
+            data={jobs}
+            keyExtractor={item => item.id}
+            renderItem={renderJobItem}
+            contentContainerStyle={[styles.listContainer, jobs.length === 0 && styles.screenCenter]}
+            ListEmptyComponent={<EmptyJobList />}
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+          {lastUpdated && <Text style={styles.lastUpdatedText}>{getTimeAgo(lastUpdated)}</Text>}
+        </View>
+      )}
 
-      {/* Alert for Delete Confirmation */}
-      <CustomAlert
+      <DeleteJobAlert
         visible={alertVisible}
-        title="Delete Job"
-        description="Are you sure you want to delete this job?"
-        confirmText="Yes, Delete"
-        cancelText="Cancel"
-        onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
       />
-
-      <CustomLoader visible={loading} />
     </View>
   )
 }

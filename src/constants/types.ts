@@ -99,3 +99,14 @@ export type CustomAlertProps = {
   onCancel: () => void
   loading?: boolean
 }
+
+export type UserProfile = {
+  id: string
+  name: string
+  email: string
+  contact?: string
+  profileImage?: string
+  bio?: string
+  skills?: string[]
+  experience?: string
+}

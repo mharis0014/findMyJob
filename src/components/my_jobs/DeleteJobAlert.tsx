@@ -6,9 +6,10 @@ interface DeleteJobAlertProps {
   visible: boolean
   onConfirm: () => void
   onCancel: () => void
+  loading?: boolean
 }
 
-const DeleteJobAlert = ({visible, onConfirm, onCancel}: DeleteJobAlertProps) => (
+const DeleteJobAlert = ({visible, onConfirm, onCancel, loading = false}: DeleteJobAlertProps) => (
   <CustomAlert
     visible={visible}
     title="Delete Job"
@@ -17,6 +18,7 @@ const DeleteJobAlert = ({visible, onConfirm, onCancel}: DeleteJobAlertProps) => 
     cancelText="Cancel"
     onConfirm={onConfirm}
     onCancel={onCancel}
+    loading={loading}
   />
 )
 

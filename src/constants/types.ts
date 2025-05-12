@@ -97,4 +97,5 @@ export type CustomAlertProps = {
   cancelText?: string
   onConfirm: () => void
   onCancel: () => void
+  loading?: boolean
 }

@@ -1,9 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react'
-import {View, Text, FlatList} from 'react-native'
+import React, {useCallback, useEffect, useMemo} from 'react'
+import {View, Text, FlatList, StyleSheet} from 'react-native'
 
 import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
-import firestore from '@react-native-firebase/firestore'
 
 import {
   DeleteJobAlert,
@@ -13,128 +12,200 @@ import {
 } from '../../../components/my_jobs'
 
 import {CompanyAppStackParamList, JobType} from '../../../constants/types'
-import LocalStorage from '../../../utils/localStorage'
 import {getTimeAgo} from '../../../utils/dateTimeHelper'
 import {STRINGS} from '../../../constants/strings'
 import styles from '../../../styles/myJobs.styles'
+import ErrorBoundary from '../../../components/common/ErrorBoundary'
+import {useJobs} from '../../../hooks/useJobs'
 
 type NavigationProp = NativeStackNavigationProp<CompanyAppStackParamList>
 
+/**
+ * MyJobs component - Displays the list of jobs posted by the company user
+ */
 const MyJobs = () => {
   const navigation = useNavigation<NavigationProp>()
   const isFocused = useIsFocused()
 
-  const [jobs, setJobs] = useState<JobType[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [alertVisible, setAlertVisible] = useState<boolean>(false)
-  const [jobToDelete, setJobToDelete] = useState<string | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  // State for delete confirmation dialog
+  const [alertVisible, setAlertVisible] = React.useState<boolean>(false)
+  const [jobToDelete, setJobToDelete] = React.useState<string | null>(null)
 
-  const fetchJobs = useCallback(async () => {
-    try {
-      setLoading(true)
+  // Use the jobs hook for job management
+  const {
+    jobs,
+    loading,
+    refreshing,
+    lastUpdated,
+    error,
+    deleteLoading,
+    fetchJobs,
+    refreshJobs,
+    deleteJob,
+  } = useJobs()
 
-      const storedJobs = await LocalStorage.getItem('jobs')
-      if (storedJobs) {
-        setJobs(JSON.parse(storedJobs))
-      } else {
-        const userId = await LocalStorage.getItem('userId')
-        const snapshot = await firestore().collection('jobs').where('postedBy', '==', userId).get()
-
-        const jobsList: JobType[] = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...(doc.data() as Omit<JobType, 'id'>),
-        }))
-
-        setJobs(jobsList)
-        LocalStorage.setItem('jobs', JSON.stringify(jobsList))
-      }
-    } catch (error) {
-      console.error('[MyJobs]', error)
-    } finally {
-      setLoading(false)
-      setLastUpdated(new Date())
-    }
-  }, [])
-
+  // Effect hook to fetch jobs when the screen is focused
   useEffect(() => {
     if (isFocused) {
       fetchJobs()
     }
   }, [isFocused, fetchJobs])
 
-  const onRefresh = async () => {
-    setRefreshing(true)
-    await fetchJobs()
-    setRefreshing(false)
-  }
-
-  const handleDeleteJob = (jobId: string) => {
+  /**
+   * Opens the delete confirmation dialog
+   */
+  const handleDeleteJob = useCallback((jobId: string) => {
     setJobToDelete(jobId)
     setAlertVisible(true)
-  }
+  }, [])
 
-  const handleEditJob = (job: JobType) => {
-    navigation.getParent()?.navigate('EditJob', {data: job})
-  }
+  /**
+   * Navigates to the EditJob screen
+   */
+  const handleEditJob = useCallback(
+    (job: JobType) => {
+      navigation.getParent()?.navigate('EditJob', {data: job})
+    },
+    [navigation],
+  )
 
-  const handleConfirmDelete = async () => {
-    if (jobToDelete) {
-      try {
-        await firestore().collection('jobs').doc(jobToDelete).delete()
-        fetchJobs()
-      } catch (error) {
-        console.error('[MyJobs] Error deleting job:', error)
-      } finally {
-        setAlertVisible(false)
-        setJobToDelete(null)
-      }
+  /**
+   * Confirms and processes job deletion
+   */
+  const handleConfirmDelete = useCallback(async () => {
+    if (!jobToDelete) return
+
+    const success = await deleteJob(jobToDelete)
+    if (success) {
+      setAlertVisible(false)
+      setJobToDelete(null)
     }
-  }
+  }, [jobToDelete, deleteJob])
 
-  const handleCancelDelete = () => {
+  /**
+   * Cancels the delete operation
+   */
+  const handleCancelDelete = useCallback(() => {
     setAlertVisible(false)
     setJobToDelete(null)
-  }
+  }, [])
 
-  const renderJobItem = ({item}) => (
-    <JobCard
-      job={item}
-      onEdit={() => handleEditJob(item)}
-      onDelete={() => handleDeleteJob(item.id)}
-    />
+  /**
+   * Render function for job list items
+   */
+  const renderJobItem = useCallback(
+    ({item}: {item: JobType}) => (
+      <JobCard
+        job={item}
+        onEdit={() => handleEditJob(item)}
+        onDelete={() => handleDeleteJob(item.id)}
+      />
+    ),
+    [handleEditJob, handleDeleteJob],
+  )
+
+  /**
+   * Memoized key extractor function to prevent unnecessary re-renders
+   */
+  const keyExtractor = useCallback((item: JobType) => item.id, [])
+
+  /**
+   * Memoized empty list component to prevent unnecessary re-renders
+   */
+  const ListEmptyComponent = useMemo(() => <EmptyJobList />, [])
+
+  /**
+   * Content component to render when jobs are loaded
+   */
+  const JobsContent = useMemo(
+    () => (
+      <View style={styles.fill}>
+        <FlatList
+          data={jobs}
+          keyExtractor={keyExtractor}
+          renderItem={renderJobItem}
+          contentContainerStyle={[styles.listContainer, jobs.length === 0 && styles.screenCenter]}
+          ListEmptyComponent={ListEmptyComponent}
+          showsVerticalScrollIndicator={false}
+          refreshing={refreshing}
+          onRefresh={refreshJobs}
+          // Performance optimizations
+          removeClippedSubviews={true}
+          maxToRenderPerBatch={10}
+          windowSize={21}
+          getItemLayout={(_, index) => ({
+            length: ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index,
+            index,
+          })}
+        />
+        {lastUpdated && <Text style={styles.lastUpdatedText}>{getTimeAgo(lastUpdated)}</Text>}
+      </View>
+    ),
+    [jobs, keyExtractor, renderJobItem, refreshing, refreshJobs, lastUpdated, ListEmptyComponent],
+  )
+
+  /**
+   * Error state component
+   */
+  const ErrorState = useMemo(
+    () =>
+      error && (
+        <View style={localStyles.errorContainer}>
+          <Text style={localStyles.errorText}>Something went wrong</Text>
+          <Text style={localStyles.errorMessage}>{error.message}</Text>
+          <Text style={localStyles.retryText} onPress={() => fetchJobs(true)}>
+            Tap to retry
+          </Text>
+        </View>
+      ),
+    [error, fetchJobs],
   )
 
   return (
-    <View style={styles.screen}>
-      <Text style={styles.headerTitle}>{STRINGS.appTitle}</Text>
+    <ErrorBoundary>
+      <View style={styles.screen}>
+        <Text style={styles.headerTitle}>{STRINGS.appTitle}</Text>
 
-      {loading ? (
-        <JobCardShimmerList />
-      ) : (
-        <View>
-          <FlatList
-            data={jobs}
-            keyExtractor={item => item.id}
-            renderItem={renderJobItem}
-            contentContainerStyle={[styles.listContainer, jobs.length === 0 && styles.screenCenter]}
-            ListEmptyComponent={<EmptyJobList />}
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-          {lastUpdated && <Text style={styles.lastUpdatedText}>{getTimeAgo(lastUpdated)}</Text>}
-        </View>
-      )}
+        {loading && !refreshing ? <JobCardShimmerList /> : ErrorState || JobsContent}
 
-      <DeleteJobAlert
-        visible={alertVisible}
-        onCancel={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-      />
-    </View>
+        <DeleteJobAlert
+          visible={alertVisible}
+          onCancel={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
+          loading={deleteLoading}
+        />
+      </View>
+    </ErrorBoundary>
   )
 }
 
-export default MyJobs
+// Constants for FlatList optimization
+const ITEM_HEIGHT = 120 // Approximate height of a job card in dp
+
+// Local styles for error handling
+const localStyles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  errorMessage: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryText: {
+    fontSize: 16,
+    color: '#0066cc',
+    textDecorationLine: 'underline',
+  },
+})
+
+export default React.memo(MyJobs)

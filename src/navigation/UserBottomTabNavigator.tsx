@@ -2,7 +2,7 @@ import React from 'react'
 import {Image, ImageSourcePropType, StyleSheet} from 'react-native'
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {scale} from 'react-native-size-matters'
+import {moderateVerticalScale, scale} from 'react-native-size-matters'
 
 import {Home, Inbox, JobApply, Profile} from '../screens/jobsearching/tabs'
 
@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
   },
   tabBarStyle: {
     backgroundColor: colors.white,
-    height: 60,
+    height: moderateVerticalScale(70),
+    paddingTop: moderateVerticalScale(15),
   },
   tabBarLabelStyle: {
-    fontSize: 12,
-    marginBottom: 5,
+    display: 'none',
   },
 })
 

@@ -5875,6 +5875,7 @@ __metadata:
     react-hook-form: "npm:^7.56.0"
     react-native: "npm:0.79.1"
     react-native-dotenv: "npm:^3.4.11"
+    react-native-fast-image: "npm:^8.6.3"
     react-native-gesture-handler: "npm:^2.25.0"
     react-native-image-picker: "npm:^8.2.0"
     react-native-linear-gradient: "npm:^2.8.3"
@@ -8965,6 +8966,16 @@ __metadata:
     react-native-gesture-handler: ">= 2.0.0"
     react-native-reanimated: ">= 2.0.0"
   checksum: 10c0/d3089dbcf0fa418d7f675b4c41bd8a10e4a866e73c3b2f3b716baa50876ab4329107f6caa3543331d3ce55edc8767024965b890fbd26893e88e291b27d952c2e
+  languageName: node
+  linkType: hard
+
+"react-native-fast-image@npm:^8.6.3":
+  version: 8.6.3
+  resolution: "react-native-fast-image@npm:8.6.3"
+  peerDependencies:
+    react: ^17 || ^18
+    react-native: ">=0.60.0"
+  checksum: 10c0/4ebeae53ffeadf1e7e5e133c1cfda81f9efe978f9ece10c732a0338149fe9104681bfdabc8427dad7c934b02bfcbd0e205bb6ca43e2844abc6054630ebe34454
   languageName: node
   linkType: hard
 

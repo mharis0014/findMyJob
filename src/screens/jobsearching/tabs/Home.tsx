@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react'
-import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native'
+import {View, Text, TouchableOpacity, Image, TextInput, ScrollView} from 'react-native'
 
 import FastImage from 'react-native-fast-image'
 
@@ -8,8 +8,13 @@ import ANIMATIONS from '../../../constants/animations'
 import styles from '../../../styles/home.styles'
 import {moderateScale} from 'react-native-size-matters'
 import {CustomButton} from '../../../components/common'
+import JobRecommendations from '../../../components/common/JobRecommendations'
+import {JobType} from '../../../constants/types'
+import {useNavigation} from '@react-navigation/native'
 
 const Home = () => {
+  const navigation = useNavigation()
+
   const handleLoginPress = useCallback(() => {
     // Navigate to login
   }, [])
@@ -22,13 +27,22 @@ const Home = () => {
     // Job Search Functionality
   }, [])
 
+  const handleJobPress = useCallback((job: JobType) => {
+    // Navigate to job details
+    console.log('Job selected:', job.id)
+    // navigation.navigate('JobDetails', { jobId: job.id })
+  }, [])
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Search Bar */}
       <TouchableOpacity style={styles.searchBar} activeOpacity={0.7}>
         <Image source={ICONS.search} style={styles.icon} />
         <Text style={styles.placeholder}>Search Jobs here...</Text>
       </TouchableOpacity>
+
+      {/* Job Recommendations Section */}
+      <JobRecommendations onJobPress={handleJobPress} />
 
       <Text style={styles.heading}>You are one step away from getting a good Job</Text>
 
@@ -75,7 +89,7 @@ const Home = () => {
 
         <CustomButton type="SOLID" title="Search Jobs" onPress={handleJobSearchPress} />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

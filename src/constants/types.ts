@@ -1,4 +1,5 @@
 import {NavigatorScreenParams} from '@react-navigation/native'
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore'
 
 // Navigation types for Root Navigator
 export type RootStackParamList = {
@@ -109,4 +110,29 @@ export type UserProfile = {
   bio?: string
   skills?: string[]
   experience?: string
+}
+
+export type ApplicationStatus =
+  | 'applied'
+  | 'screening'
+  | 'interview'
+  | 'offer'
+  | 'rejected'
+  | 'withdrawn'
+
+export type JobApplication = {
+  id: string
+  userId: string
+  jobId: string
+  jobTitle: string
+  company: string
+  status: ApplicationStatus
+  appliedDate: FirebaseFirestoreTypes.Timestamp | Date
+  lastUpdated: FirebaseFirestoreTypes.Timestamp | Date
+  notes?: string
+  contactPerson?: string
+  contactEmail?: string
+  interviewDate?: FirebaseFirestoreTypes.Timestamp | Date | null
+  salary?: string
+  location?: string
 }

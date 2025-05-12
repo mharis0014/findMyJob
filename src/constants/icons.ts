@@ -25,6 +25,7 @@ const ICONS = {
   left_arrow: require('../assets/icons/left-arrow.png'),
   send_light: require('../assets/icons/send-light.png'),
   send_dark: require('../assets/icons/send-dark.png'),
+  star: require('../assets/icons/star.png'),
 }
 
 export default ICONS

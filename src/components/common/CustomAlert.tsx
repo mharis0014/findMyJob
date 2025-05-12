@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, TouchableOpacity, Modal, StyleSheet} from 'react-native'
+import {View, Text, TouchableOpacity, Modal, StyleSheet, ActivityIndicator} from 'react-native'
 
 import {colors} from '../../constants/colors'
 import {CustomAlertProps} from '../../constants/types'
@@ -12,6 +12,7 @@ const CustomAlert = ({
   cancelText = 'Cancel',
   onConfirm,
   onCancel,
+  loading = false,
 }: CustomAlertProps) => {
   return (
     <Modal transparent visible={visible} animationType="fade" onRequestClose={onCancel}>
@@ -21,12 +22,22 @@ const CustomAlert = ({
           <Text style={styles.description}>{description}</Text>
 
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={onCancel}
+              disabled={loading}>
               <Text style={styles.buttonText}>{cancelText}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.confirmButton]} onPress={onConfirm}>
-              <Text style={styles.buttonText}>{confirmText}</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.confirmButton, loading && styles.disabledButton]}
+              onPress={onConfirm}
+              disabled={loading}>
+              {loading ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <Text style={styles.buttonText}>{confirmText}</Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -73,12 +84,17 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     width: '48%',
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
   },
   cancelButton: {
     backgroundColor: colors.gray,
   },
   confirmButton: {
     backgroundColor: colors.primary,
+  },
+  disabledButton: {
+    opacity: 0.7,
   },
   buttonText: {
     fontSize: 16,

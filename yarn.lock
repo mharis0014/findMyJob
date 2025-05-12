@@ -2797,6 +2797,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/netinfo@npm:^11.4.1":
+  version: 11.4.1
+  resolution: "@react-native-community/netinfo@npm:11.4.1"
+  peerDependencies:
+    react-native: ">=0.59"
+  checksum: 10c0/118ba6d495bd14c2dab3d228a0c1857620a293ae8592d170d70eaf88a6ac6a4e35c7f84527975a9054e36891a9694aacc8ec053326b5f05961459ed08a70dd35
+  languageName: node
+  linkType: hard
+
+"@react-native-community/push-notification-ios@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "@react-native-community/push-notification-ios@npm:1.11.0"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    react: ">=16.6.3"
+    react-native: ">=0.58.4"
+  checksum: 10c0/dda1052069b196eed2b23bd843f4824ff53e54978b625e016a78203978eae75af0779c398dbf324ae8c82cfd409b781a1273d5f8b05a77249457810c7756fe84
+  languageName: node
+  linkType: hard
+
+"@react-native-community/slider@npm:^4.5.6":
+  version: 4.5.6
+  resolution: "@react-native-community/slider@npm:4.5.6"
+  checksum: 10c0/6ff9b91b8f9af14fadccad101fc0abc17c864a5d2832483aef8813e67a93ad723053ed033141f71db8f7a128d3b1fdf4dd37f5c093901e7f041380a671090283
+  languageName: node
+  linkType: hard
+
 "@react-native-firebase/app@npm:^21.14.0":
   version: 21.14.0
   resolution: "@react-native-firebase/app@npm:21.14.0"
@@ -2819,6 +2847,19 @@ __metadata:
   peerDependencies:
     "@react-native-firebase/app": 21.14.0
   checksum: 10c0/063a9d571b071dc30189231153105b4ddf8261e5b8e460200507e3e44a71fbe90885f23fe7921c2c05b15614e9896e0416f52f416319399172af1d78f842bb54
+  languageName: node
+  linkType: hard
+
+"@react-native-firebase/messaging@npm:^22.1.0":
+  version: 22.1.0
+  resolution: "@react-native-firebase/messaging@npm:22.1.0"
+  peerDependencies:
+    "@react-native-firebase/app": 22.1.0
+    expo: ">=47.0.0"
+  peerDependenciesMeta:
+    expo:
+      optional: true
+  checksum: 10c0/486fb56f4f6f7ab858f4a914d9276db3ffae78ae35275b0b7c191e83408a73190b6a82a53132bca9d0957d949223bede8750168836366b36aff13ea34d62416b
   languageName: node
   linkType: hard
 
@@ -3336,6 +3377,13 @@ __metadata:
   version: 0.2.2
   resolution: "@types/react-native-dotenv@npm:0.2.2"
   checksum: 10c0/0b24dc29cf119c689c7758e5cec044c7c2c74f046150fb84b515d70ea94301fd2123343f11b7dac01bbadcc730b5405607ac2a96e39cc599e0cf197bcefa8710
+  languageName: node
+  linkType: hard
+
+"@types/react-native-push-notification@npm:^8":
+  version: 8.1.4
+  resolution: "@types/react-native-push-notification@npm:8.1.4"
+  checksum: 10c0/cd5f3f25baa16f8c6e68030b21d62b1f928b6555cbcfff23b74655f72d7aeb4d473e873358dc5a771e3d3745e64d90ec9fe34dc46d427765879e5efec8c86a08
   languageName: node
   linkType: hard
 
@@ -5839,8 +5887,12 @@ __metadata:
     "@react-native-community/cli": "npm:^18.0.0"
     "@react-native-community/cli-platform-android": "npm:18.0.0"
     "@react-native-community/cli-platform-ios": "npm:18.0.0"
+    "@react-native-community/netinfo": "npm:^11.4.1"
+    "@react-native-community/push-notification-ios": "npm:^1.11.0"
+    "@react-native-community/slider": "npm:^4.5.6"
     "@react-native-firebase/app": "npm:^21.14.0"
     "@react-native-firebase/firestore": "npm:^21.14.0"
+    "@react-native-firebase/messaging": "npm:^22.1.0"
     "@react-native/babel-preset": "npm:0.79.1"
     "@react-native/eslint-config": "npm:0.79.1"
     "@react-native/eslint-plugin": "npm:^0.79.1"
@@ -5855,6 +5907,7 @@ __metadata:
     "@types/react": "npm:^19.1.2"
     "@types/react-native": "npm:^0.73.0"
     "@types/react-native-dotenv": "npm:^0.2.2"
+    "@types/react-native-push-notification": "npm:^8"
     "@types/react-test-renderer": "npm:^19.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.30.1"
     "@typescript-eslint/parser": "npm:^8.30.1"
@@ -5880,6 +5933,7 @@ __metadata:
     react-native-image-picker: "npm:^8.2.0"
     react-native-linear-gradient: "npm:^2.8.3"
     react-native-mmkv: "npm:^3.2.0"
+    react-native-push-notification: "npm:^8.1.1"
     react-native-reanimated: "npm:^3.17.5"
     react-native-safe-area-context: "npm:^5.4.0"
     react-native-screens: "npm:^4.10.0"
@@ -5889,6 +5943,7 @@ __metadata:
     react-test-renderer: "npm:19.0.0"
     typescript: "npm:5.0.4"
     yup: "npm:^1.6.1"
+    zustand: "npm:^5.0.4"
   languageName: unknown
   linkType: soft
 
@@ -9033,6 +9088,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-push-notification@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "react-native-push-notification@npm:8.1.1"
+  peerDependencies:
+    "@react-native-community/push-notification-ios": ^1.10.1
+    react-native: ">=0.33"
+  checksum: 10c0/d215a17ce815c65e6a77b1b61ce4e929deead8b969a5133baa5e2b903381b822422d9bbba1cd2c57e36e8aa9a1789c788e47be9fcbc86f6315c6a9de64398c40
+  languageName: node
+  linkType: hard
+
 "react-native-reanimated@npm:^3.17.5":
   version: 3.17.5
   resolution: "react-native-reanimated@npm:3.17.5"
@@ -10845,5 +10910,26 @@ __metadata:
     toposort: "npm:^2.0.2"
     type-fest: "npm:^2.19.0"
   checksum: 10c0/84c2b53996e8001041239cf2719851719f67063ec7cd843067df73562353216f5ad4f8a222319696882d5a6058e528fade1e463c59d70cbffb41b99cd0d7571b
+  languageName: node
+  linkType: hard
+
+"zustand@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "zustand@npm:5.0.4"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: 10c0/5b6220f51b315cef3224a6517fcc00fa553df1af604009a9f02f8091727fe52e0499bc093be3efdd64b9fa4ad9238346aff21f34cdf79355207fcad097031596
   languageName: node
   linkType: hard

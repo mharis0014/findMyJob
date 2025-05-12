@@ -3,7 +3,7 @@
   "compilerOptions": {
     "types": ["react", "react-native", "@types/react-native-dotenv"],
     "jsx": "react-native",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "strict": true,
     "allowJs": true,
